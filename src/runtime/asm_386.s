@@ -79,7 +79,7 @@ notintel:
 
 	// Check for MMX support
 	TESTL	$(1<<23), DX	// MMX
-	JZ 	bad_proc
+	//JZ 	bad_proc
 
 	// Load EAX=7/ECX=0 cpuid flags
 	CMPL	SI, $7

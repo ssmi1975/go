@@ -159,10 +159,16 @@ TEXT ·LoadUint64(SB),NOSPLIT,$0-12
 	MOVL	0, AX // crash with nil ptr deref
 	// MOVQ and EMMS were introduced on the Pentium MMX.
 	// MOVQ (%EAX), %MM0
-	BYTE $0x0f; BYTE $0x6f; BYTE $0x00
+	// BYTE $0x0f; BYTE $0x6f; BYTE $0x00
 	// MOVQ %MM0, 0x8(%ESP)
-	BYTE $0x0f; BYTE $0x7f; BYTE $0x44; BYTE $0x24; BYTE $0x08
-	EMMS
+	// BYTE $0x0f; BYTE $0x7f; BYTE $0x44; BYTE $0x24; BYTE $0x08
+	//EMMS
+	MOVL	DX, -4(SP)
+	MOVL	(AX), DX
+	MOVL	DX, 8(SP)
+	MOVL	4(AX), DX
+	MOVL	DX, 12(SP)
+	MOVL	-4(SP), DX
 	RET
 
 TEXT ·LoadUintptr(SB),NOSPLIT,$0-8
@@ -190,10 +196,16 @@ TEXT ·StoreUint64(SB),NOSPLIT,$0-12
 	MOVL	0, AX // crash with nil ptr deref
 	// MOVQ and EMMS were introduced on the Pentium MMX.
 	// MOVQ 0x8(%ESP), %MM0
-	BYTE $0x0f; BYTE $0x6f; BYTE $0x44; BYTE $0x24; BYTE $0x08
+	// BYTE $0x0f; BYTE $0x6f; BYTE $0x44; BYTE $0x24; BYTE $0x08
 	// MOVQ %MM0, (%EAX)
-	BYTE $0x0f; BYTE $0x7f; BYTE $0x00 
-	EMMS
+	// BYTE $0x0f; BYTE $0x7f; BYTE $0x00 
+	//EMMS
+	MOVL	DX, -4(SP)
+	MOVL	8(SP), DX
+	MOVL	DX, (AX)
+	MOVL	12(SP), DX
+	MOVL	DX, 4(AX)
+	MOVL	-4(SP), DX
 	// This is essentially a no-op, but it provides required memory fencing.
 	// It can be replaced with MFENCE, but MFENCE was introduced only on the Pentium4 (SSE2).
 	XORL	AX, AX
